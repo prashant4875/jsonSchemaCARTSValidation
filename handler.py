@@ -9,10 +9,12 @@ schema = {
                "maxLength":8
               },
         "start_date":{"type":"string",
-                      "format":"date"
+                      "format":"date",
+                      "pattern":"^[1-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$"
                      },
         "end_date":{"type":"string",
-                    "format":"date"
+                    "format":"date",
+                    "pattern":"^[1-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$"
                      },
         "container_type":{"type":"string",
                           "enum":["Compactor","FL Dumpster","Lugger","RL Dumpster","RO Bin","SL Dumpster"]
