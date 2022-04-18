@@ -1,0 +1,42 @@
+service: serverless-lambda-carts-test
+
+frameworkVersion: '2 || 3'
+
+plugins:
+  - serverless-reqvalidator-plugin
+  - serverless-python-requirements
+provider:
+  name: aws
+  runtime: python3.7
+  # lambdaHashingVersion: 20201221
+  region: ap-southeast-2
+  stage: ${opt:stage, 'dev'}
+  layers: 
+    - !Ref PythonRequirementsLambdaLayer
+
+# functions:
+#   hello:
+#     handler: handler.hello
+#     events:
+#       - http:
+#           method: GET 
+#           path: /auth
+#           authorizer: ${self:custom.authorizer}
+
+functions:
+  - ${file(functions/function.yml)}
+
+# resources:
+#   - ${file(resources/public.yml)}
+        
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    layer:
+      name: python-layer
+      description: Python requirements lambda layer
+      compatibleRuntimes:
+        - python3.7
+      retain: false
+

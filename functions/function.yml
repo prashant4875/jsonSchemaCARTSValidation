@@ -1,0 +1,33 @@
+main:
+    handler: handler.main
+    events:
+      - http:
+          method: GET
+          path: /main/{id}
+          integration: lambda
+          # reqValidatorName: validator
+          request:
+            passThrough: NEVER
+            parameters:
+              paths:
+                id: true
+              querystrings:
+                start_date: true
+                end_date: true
+                container_type: true
+                volume: true
+                quantity: true  
+            template:
+              application/json: '{ "id":"$input.params(''id'')","start_date":"$input.params(''start_date'')","end_date":"$input.params(''end_date'')","container_type":"$input.params(''container_type'')","volume":"$input.params(''volume'')","quantity":"$input.params(''quantity'')"}'
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$')
+            statusCodes: 
+                200:
+                  pattern: ''
+                500:
+                  pattern: '.*\[InternalServerError\].*'
+                  template: $input.path("$.errorMessage")
+                  headers:
+                    Content-Type: "'application/json'"
