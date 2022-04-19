@@ -15,7 +15,7 @@ main:
                 start_date: true
                 end_date: true
                 container_type: true
-                volume: true
+                volume: false
                 quantity: true  
             template:
               application/json: '{ "id":"$input.params(''id'')","start_date":"$input.params(''start_date'')","end_date":"$input.params(''end_date'')","container_type":"$input.params(''container_type'')","volume":"$input.params(''volume'')","quantity":"$input.params(''quantity'')"}'

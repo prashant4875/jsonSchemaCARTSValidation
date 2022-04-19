@@ -6,43 +6,34 @@ schema = {
     "properties": {
         "id": {"type": "string",
                "minLength":5,
-               "maxLength":8
+               "maxLength":8,
+               "error_msg": "Hauling Site ID NOT Found"
               },
         "start_date":{"type":"string",
                       "format":"date",
-                      "pattern":"^[1-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$"
+                      "pattern":"^[1-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$",
+                      "error_msg": "Invalid Date provided"
                      },
         "end_date":{"type":"string",
                     "format":"date",
-                    "pattern":"^[1-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$"
+                    "pattern":"^[1-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$",
+                    "error_msg": "Invalid Date provided"
                      },
         "container_type":{"type":"string",
-                          "enum":["Compactor","FL Dumpster","Lugger","RL Dumpster","RO Bin","SL Dumpster"]
+                          "enum":["Compactor","FL Dumpster","Lugger","RL Dumpster","RO Bin","SL Dumpster"],
+                          "error_msg": "Container Type provided not found"
                          },
-        "volume":{"type":"string",
-                  "pattern":"[0-9]YD"
-                 },
+        # "volume":{"type":"string",
+        #           "pattern":"[0-9]YD"
+        #          },
         "quantity": {"type":"string",
-                     "pattern":"[0-9]"},
+                     "pattern":"[0-9]",
+                     "error_msg": "Quantity given is not a number"
+                    },
         
-    }
+    },
+    "required": ["id","start_date","end_date","container_type","quantity"],
 }
-
-# schema = {
-#      "type" : "string",
-#      "properties" : {
-#          "queryStringParameters" : {
-#                 "type" : "string",
-#                 "properties": {
-#                         "user_id": {
-#                                 "type": "string",
-#                                 "minLength": 7,
-#                         }
-#                 }
-#         },
-
-#      },
-#  }
 
 def main(event, context):
     jsondump = json.dumps(event)
@@ -50,31 +41,10 @@ def main(event, context):
     try:
         validate(instance=jsonData, schema=schema)
         
-    #     u = int(event['user_id'])
-    # # a = int(event['siteId'])
-
-    #     if u==12345678:
-    #         return {
-    #             'name': "CARTS",
-    #             'company': "WM"
-    #         }
-        
-    #     else: 
-    #         return {
-    #             'ui': u,
-    #             # 'ai': a,
-    #             'name': "other",
-    #             'company': "other1"
-    #         }
     except ValidationError as e:
         return {
             "statusCode": 404,
-            "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Credentials": True,
-                "x-amzn-ErrorType": "ValidationError",
-            },
-            "body": e.message,
+            "body": e.schema["error_msg"]
         }
     return {
         "title": "success"
